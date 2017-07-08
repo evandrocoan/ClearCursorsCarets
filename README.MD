@@ -16,7 +16,7 @@ It also clear the current selection before closing any opened panel.
 
 
 ___
-## Licence
+## License
 
 All files in this repository are released under GNU General Public License v3.0
 or the latest version available on http://www.gnu.org/licenses/gpl.html
