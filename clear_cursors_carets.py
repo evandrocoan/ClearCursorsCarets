@@ -8,6 +8,17 @@ import sublime
 import sublime_plugin
 
 
+class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+
+        # print( 'Calling Selection First...' )
+        first = self.view.sel()[0]
+        self.view.sel().clear()
+        self.view.sel().add(first)
+        self.view.show(first)
+
+
 class SingleSelectionLastCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
@@ -18,17 +29,6 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
         self.view.sel().add(last)
         self.view.show(last)
 
-
-
-class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
-
-    def run(self, edit):
-
-        # print( 'Calling Selection First...' )
-        first = self.view.sel()[0]
-        self.view.sel().clear()
-        self.view.sel().add(first)
-        self.view.show(first)
 
 
 
