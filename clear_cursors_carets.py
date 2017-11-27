@@ -8,8 +8,12 @@ import sublime
 import sublime_plugin
 
 
-last_expansions = []
-first_expansion = None
+def plugin_loaded():
+    global first_expansion
+    global last_expansions
+
+    last_expansions = []
+    first_expansion = None
 
 class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
 
@@ -24,8 +28,15 @@ class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
         if first_expansion \
                 and first_expansion in selections:
 
-            first = first_expansion
-            # print( "Selecting first: " + str( first ) )
+            # print( "SingleSelectionFirst, last_expansions_length: " + str( len( last_expansions ) ) )
+            # Somehow the selections are inverted when there is only 2 selections
+            if len( last_expansions ) == 2:
+                first = last_expansions[0]
+
+            else:
+                first = first_expansion
+
+            # print( "SingleSelectionFirst, Selecting first: " + str( first ) )
 
             selections.clear()
             selections.add( first )
@@ -44,7 +55,7 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
 
         if len( last_expansions ):
             last = last_expansions[-1]
-            # print( "Selecting last: " + str( last ) )
+            # print( "SingleSelectionLast, Selecting last: " + str( last ) )
 
             # If the selection changed as when using the arrow keys, we cannot use `last_expansions`
             if last not in selections:
@@ -78,10 +89,14 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
 
             if last_expansions_length > 1 \
                     and selections_length > 0 \
-                    and last_expansions_length > selections_length:
+                    and last_expansions_length >= selections_length:
 
-                # print( "Cleaning: " + str( last_expansions ) )
-                del last_expansions[:]
+                # print( "(PRE) Cleaning: " + str( last_expansions ) )
+                for index, selection in enumerate( last_expansions ):
+
+                    if selection not in selections:
+                        del last_expansions[index]
+
                 first_expansion = selections[0]
 
     def on_post_window_command(self, window, command_name, args):
@@ -102,9 +117,9 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
             for selection in selections:
 
                 if selection not in last_expansions:
-                    # print( "selection: " + str( selection ) )
+                    # print( "(POS) selection: " + str( selection ) )
                     last_expansions.append( selection )
 
-            # print( "last_expansions: " + str( last_expansions ) )
+            # print( "(POS) last_expansions: " + str( last_expansions ) )
 
 
