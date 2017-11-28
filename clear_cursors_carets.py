@@ -15,18 +15,24 @@ class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # print( 'Calling Selection First...' )
         # print( "SingleSelectionFirst, last_expansions_length: " + str( len( last_expansions ) ) )
-
         view       = self.view
         selections = view.sel()
+
+        def run_single_selection():
+            view.run_command( "single_selection" )
 
         # If the selection changed as when using the arrow keys, we cannot use `first_expansion`
         if len( last_expansions ):
             first = last_expansions[0]
             # print( "SingleSelectionFirst, Selecting first: " + str( first ) )
 
-            selections.clear()
-            selections.add( first )
-            view.show( first )
+            if first not in selections:
+                run_single_selection()
+
+            else:
+                selections.clear()
+                selections.add( first )
+                view.show( first )
 
         else:
             view.run_command( "single_selection" )
