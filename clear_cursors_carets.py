@@ -60,6 +60,7 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
         selections.clear()
         selections.add( last )
         view.show( last )
+        sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
 
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
