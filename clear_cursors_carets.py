@@ -105,3 +105,32 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
             # print( "(POS) last_expansions: " + str( last_expansions ) )
 
 
+def run_tests():
+    """
+        How do I unload (reload) a Python module?
+        https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module
+    """
+    print( "\n\n" )
+    sublime_plugin.reload_plugin( "Wrap Plus.tests.unit_tests_runner" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_unit_tests" )
+
+    from .tests import unit_tests_runner
+
+    # Comment all the tests names on this list, to run all Unit Tests
+    unit_tests_to_run = \
+    [
+        # "",
+    ]
+
+    unit_tests_runner.run_unit_tests( unit_tests_to_run )
+
+
+def plugin_loaded():
+    """
+        Running single test from unittest.TestCase via command line
+        https://stackoverflow.com/questions/15971735/running-single-test-from-unittest-testcase-via-command-line
+    """
+    pass
+    run_tests()
+
+
