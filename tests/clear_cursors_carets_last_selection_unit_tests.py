@@ -13,7 +13,7 @@ def wrap_text(text):
     return textwrap.dedent( text ).strip( " " ).strip( "\n" )
 
 
-class ClearCursorsCaretsSequentialUnitTests(unittest.TestCase):
+class ClearCursorsCaretsLastSelectionUnitTests(unittest.TestCase):
 
     @classmethod
     def setUp(self):
