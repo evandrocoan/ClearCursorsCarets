@@ -1,12 +1,19 @@
 
 
-import sys
-
 import sublime
 import sublime_plugin
 
+import os
+import sys
+import importlib
 
-class ClearCursorsCaretsFirstSelectionUnitTests(sys.modules["ClearCursorsCarets.tests.utilities"].BasicSublimeTextViewTestCase):
+CURRENT_DIRECTORY    = os.path.dirname( os.path.dirname( os.path.realpath( __file__ ) ) )
+CURRENT_PACKAGE_NAME = os.path.basename( CURRENT_DIRECTORY ).rsplit('.', 1)[0]
+
+utilities = importlib.import_module( CURRENT_PACKAGE_NAME + ".tests.utilities" )
+
+
+class ClearCursorsCaretsFirstSelectionUnitTests(utilities.BasicSublimeTextViewTestCase):
 
     def test_1_selections_at_first_word(self):
         self.create_test_text(0)
