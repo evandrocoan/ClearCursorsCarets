@@ -120,7 +120,7 @@ def run_tests():
     # Comment all the tests names on this list, to run all Unit Tests
     unit_tests_to_run = \
     [
-        # "test_first_selection_with_2_selections_at_last_word",
+        # "test_2_selections_at_last_word",
         # "test_last_selection_with_6_selections_plus_redundant_expand_at_last_word",
     ]
 
@@ -133,6 +133,6 @@ def plugin_loaded():
         https://stackoverflow.com/questions/15971735/running-single-test-from-unittest-testcase-via-command-line
     """
     pass
-    run_tests()
+    # run_tests()
 
 
