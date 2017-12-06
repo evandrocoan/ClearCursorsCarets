@@ -111,6 +111,7 @@ def run_tests():
     """
     print( "\n\n" )
     sublime_plugin.reload_plugin( "Wrap Plus.tests.unit_tests_runner" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.utilities" )
     sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_first_selection_unit_tests" )
     sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_last_selection_unit_tests" )
 
