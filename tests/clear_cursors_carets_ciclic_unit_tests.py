@@ -13,7 +13,7 @@ def wrap_text(text):
     return textwrap.dedent( text ).strip( " " ).strip( "\n" )
 
 
-class ClearCursorsCaretsUnitTests(unittest.TestCase):
+class ClearCursorsCaretsCiclicUnitTests(unittest.TestCase):
 
     @classmethod
     def setUp(self):
@@ -27,11 +27,11 @@ class ClearCursorsCaretsUnitTests(unittest.TestCase):
         settings = sublime.load_settings("Preferences.sublime-settings")
         settings.set("close_windows_when_empty", False)
 
-    # def tearDown(self):
-    #     if self.view:
-    #         self.view.set_scratch(True)
-    #         self.view.window().focus_view(self.view)
-    #         self.view.window().run_command("close_file")
+    def tearDown(self):
+        if self.view:
+            self.view.set_scratch(True)
+            self.view.window().focus_view(self.view)
+            self.view.window().run_command("close_file")
 
     def setText(self, string, start_point=0):
         self.view.run_command("append", {"characters": wrap_text( string ) })
@@ -40,7 +40,15 @@ class ClearCursorsCaretsUnitTests(unittest.TestCase):
         selections.clear()
         selections.add( sublime.Region( start_point, start_point ) )
 
-    def create_test_text(self):
+    def create_test_text(self, start_point):
+        """
+            1. (0, 4),
+            2. (5, 9),
+            3. (10, 14),
+            4. (16, 20),
+            5. (21, 25),
+            6. (26, 30),
+        """
         self.setText( """\
                 word
                 word
@@ -48,11 +56,16 @@ class ClearCursorsCaretsUnitTests(unittest.TestCase):
 
                 word
                 word
-                word""" )
+                word""", start_point )
 
-    def test_triple_quotes_comment(self):
-        self.create_test_text()
+    def test_first_selection_with_2_selections_at_last_word(self):
+        self.create_test_text(26)
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "single_selection_first" )
 
-        # self.assertEqual( sublime.Region(0, 58), region )
+        region = self.view.sel()[0]
+        self.assertEqual( sublime.Region(26, 30), region )
+
 
 
