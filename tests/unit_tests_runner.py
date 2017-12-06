@@ -8,8 +8,8 @@ def run_unit_tests(unit_tests_to_run=[]):
 
     classes = \
     [
-        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_sequencial_unit_tests"].ClearCursorsCaretsSequentialUnitTests,
-        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_ciclic_unit_tests"].ClearCursorsCaretsCiclicUnitTests,
+        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_first_selection_unit_tests"].ClearCursorsCaretsFirstSelectionUnitTests,
+        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_last_selection_unit_tests"].ClearCursorsCaretsLastSelectionUnitTests,
     ]
 
     if len( unit_tests_to_run ) < 1:

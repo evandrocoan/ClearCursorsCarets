@@ -13,7 +13,7 @@ def wrap_text(text):
     return textwrap.dedent( text ).strip( " " ).strip( "\n" )
 
 
-class ClearCursorsCaretsCiclicUnitTests(unittest.TestCase):
+class ClearCursorsCaretsFirstSelectionUnitTests(unittest.TestCase):
 
     @classmethod
     def setUp(self):
@@ -66,6 +66,16 @@ class ClearCursorsCaretsCiclicUnitTests(unittest.TestCase):
 
         region = self.view.sel()[0]
         self.assertEqual( sublime.Region(26, 30), region )
+
+    def test_first_selection_with_3_selections_at_last_word(self):
+        self.create_test_text(21)
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "single_selection_first" )
+
+        region = self.view.sel()[0]
+        self.assertEqual( sublime.Region(21, 25), region )
 
 
 

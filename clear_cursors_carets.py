@@ -111,8 +111,8 @@ def run_tests():
     """
     print( "\n\n" )
     sublime_plugin.reload_plugin( "Wrap Plus.tests.unit_tests_runner" )
-    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_ciclic_unit_tests" )
-    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_sequencial_unit_tests" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_first_selection_unit_tests" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_last_selection_unit_tests" )
 
     from .tests import unit_tests_runner
 
@@ -132,6 +132,6 @@ def plugin_loaded():
         https://stackoverflow.com/questions/15971735/running-single-test-from-unittest-testcase-via-command-line
     """
     pass
-    # run_tests()
+    run_tests()
 
 
