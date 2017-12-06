@@ -70,38 +70,69 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
             Here we clean the selections.
         """
         if command_name == "find_under_expand":
-            # print( "(PRE) Running... find_under_expand" )
             view       = window.active_view()
             selections = view.sel()
 
             selections_length      = len( selections )
             last_expansions_length = len( last_expansions )
 
+            # print( "\nfind_under_expand(PRE),  selections_length: %14d, selections: %s%s" % ( selections_length, " "*12, str( [ selection for selection in selections ] ) ) )
+            # print( "find_under_expand(PRE),  last_expansions_length: %9d, last_expansions: %s%s" % ( last_expansions_length, " "*7, str( last_expansions ) ) )
+
             if last_expansions_length > 1 \
                     and selections_length > 0 \
                     and last_expansions_length >= selections_length:
 
-                # print( "(PRE) Cleaning: " + str( last_expansions ) )
-                for index, selection in enumerate( last_expansions ):
-
-                    if selection not in selections:
-                        del last_expansions[index]
+                last_expansions[:] = [ last_expansion for last_expansion in last_expansions if last_expansion in selections ]
+                # print( "find_under_expand(PRE),  Cleaned last_expansions: %s" % ( str( last_expansions ) ) )
 
     def on_post_window_command(self, window, command_name, args):
         """
             Here add the recent created new selections by Sublime Text.
         """
         if command_name == "find_under_expand":
-            # print( "(POS) Running... find_under_expand" )
             view       = window.active_view()
             selections = view.sel()
 
+            # print( "find_under_expand(POST), selections_length: %14d, selections: %s%s" % ( len( selections ), " "*12, str( [ selection for selection in selections ] ) ) )
+            # print( "find_under_expand(POST), last_expansions_length: %9d, last_expansions: %s%s" % ( len( last_expansions ), " "*7, str( last_expansions ) ) )
+
             for selection in selections:
 
+                # print( "find_under_expand(POST), Adding selection: %15s, not in last_expansions? %s" % ( selection, str( selection not in last_expansions ) ) )
                 if selection not in last_expansions:
-                    # print( "(POS) selection: " + str( selection ) )
                     last_expansions.append( selection )
 
-            # print( "(POS) last_expansions: " + str( last_expansions ) )
+
+def run_tests():
+    """
+        How do I unload (reload) a Python module?
+        https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module
+    """
+    print( "\n\n" )
+    sublime_plugin.reload_plugin( "Wrap Plus.tests.unit_tests_runner" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.utilities" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_first_selection_unit_tests" )
+    sublime_plugin.reload_plugin( "ClearCursorsCarets.tests.clear_cursors_carets_last_selection_unit_tests" )
+
+    from .tests import unit_tests_runner
+
+    # Comment all the tests names on this list, to run all Unit Tests
+    unit_tests_to_run = \
+    [
+        # "test_2_selections_at_last_word",
+        # "test_last_selection_with_6_selections_plus_redundant_expand_at_last_word",
+    ]
+
+    unit_tests_runner.run_unit_tests( unit_tests_to_run )
+
+
+def plugin_loaded():
+    """
+        Running single test from unittest.TestCase via command line
+        https://stackoverflow.com/questions/15971735/running-single-test-from-unittest-testcase-via-command-line
+    """
+    pass
+    # run_tests()
 
 
