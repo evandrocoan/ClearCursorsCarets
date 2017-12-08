@@ -31,14 +31,17 @@ class BasicSublimeTextViewTestCase(unittest.TestCase):
             self.view.window().focus_view(self.view)
             self.view.window().run_command("close_file")
 
-    def setText(self, string, start_point=0):
+    def setText(self, string, start_point=0, end_point=None):
         self.view.run_command("append", {"characters": wrap_text( string ) })
+
+        if not end_point:
+            end_point = start_point
 
         selections = self.view.sel()
         selections.clear()
-        selections.add( sublime.Region( start_point, start_point ) )
+        selections.add( sublime.Region( start_point, end_point ) )
 
-    def create_test_text(self, start_point):
+    def create_test_text(self, start_point, end_point=None):
         """
             1. (0, 4),
             2. (5, 9),
@@ -54,6 +57,6 @@ class BasicSublimeTextViewTestCase(unittest.TestCase):
 
                 word
                 word
-                word""", start_point )
+                word""", start_point, end_point )
 
 

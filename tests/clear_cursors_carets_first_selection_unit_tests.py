@@ -100,5 +100,18 @@ class ClearCursorsCaretsFirstSelectionUnitTests(utilities.BasicSublimeTextViewTe
         region = self.view.sel()[0]
         self.assertEqual( sublime.Region(21, 25), region )
 
+    def test_3_selections_with_initial_selection(self):
+        self.create_test_text(26)
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "single_selection_first" )
+
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "find_under_expand" )
+        self.view.window().run_command( "single_selection_first" )
+
+        region = self.view.sel()[0]
+        self.assertEqual( sublime.Region(26, 30), region )
+
 
 

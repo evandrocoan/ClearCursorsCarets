@@ -126,7 +126,7 @@ def run_tests():
     unit_tests_to_run = \
     [
         # "test_2_selections_at_last_word",
-        # "test_last_selection_with_6_selections_plus_redundant_expand_at_last_word",
+        # "test_3_selections_with_initial_selection",
     ]
 
     unit_tests_runner.run_unit_tests( unit_tests_to_run )
