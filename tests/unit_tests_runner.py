@@ -3,13 +3,17 @@
 import sys
 import unittest
 
+CURRENT_DIRECTORY    = os.path.dirname( os.path.dirname( os.path.realpath( __file__ ) ) )
+CURRENT_PACKAGE_NAME = os.path.basename( CURRENT_DIRECTORY ).rsplit('.', 1)[0]
+
+
 def run_unit_tests(unit_tests_to_run=[]):
     runner = unittest.TextTestRunner()
 
     classes = \
     [
-        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_first_selection_unit_tests"].ClearCursorsCaretsFirstSelectionUnitTests,
-        sys.modules["ClearCursorsCarets.tests.clear_cursors_carets_last_selection_unit_tests"].ClearCursorsCaretsLastSelectionUnitTests,
+        sys.modules[CURRENT_PACKAGE_NAME + ".tests.clear_cursors_carets_first_selection_unit_tests"].ClearCursorsCaretsFirstSelectionUnitTests,
+        sys.modules[CURRENT_PACKAGE_NAME + ".tests.clear_cursors_carets_last_selection_unit_tests"].ClearCursorsCaretsLastSelectionUnitTests,
     ]
 
     if len( unit_tests_to_run ) < 1:
