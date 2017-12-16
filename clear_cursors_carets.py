@@ -58,11 +58,18 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             # Currently there is no Sublime Text support command to run and get the last selections
             last = selections[-1]
 
-        # print( "SingleSelectionLast, Selecting last: " + str( last ) )
+        first = selections[0]
         selections.clear()
         selections.add( last )
-        view.show( last )
-        sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
+
+        def delayed_run():
+            # print( "SingleSelectionLast, Selecting last: " + str( last ) )
+
+            view.show_at_center( last )
+            sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
+
+        view.show_at_center( first )
+        sublime.set_timeout_async( delayed_run, 100 )
 
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
