@@ -10,6 +10,12 @@ import sublime
 import sublime_plugin
 
 
+def force_focus(view, region):
+    window = sublime.active_window()
+    window.focus_view( view )
+    view.show( region )
+
+
 last_expansions = []
 
 class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
@@ -58,22 +64,20 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             # Currently there is no Sublime Text support command to run and get the last selections
             last = selections[-1]
 
-        selections.clear()
-        sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
-
-        # selections.add( last )
-        # view.run_command( "move", {"by": "characters", "forward": False} )
-
-        # print( "SingleSelectionLast, Selecting last: " + str( last ) )
-        window = sublime.active_window()
-        window.focus_view( view )
-
-        def run_delayed():
+        def run_blinking_focus():
             global last_selection
             last_selection = last
+
+            force_focus( view, last )
             view.run_command( "single_selection_last_helper" )
 
-        sublime.set_timeout( run_delayed, 500 )
+        selections.clear()
+        sublime_plugin.sublime.status_message( 'Last selection set to %s' % view.substr( last ) )
+
+        # view.run_command( "move", {"by": "characters", "forward": False} )
+        # print( "SingleSelectionLast, Selecting last: " + str( last ) )
+        sublime.set_timeout_async( run_blinking_focus, 200 )
+        force_focus( view, last )
 
 
 class SingleSelectionLastHelperCommand(sublime_plugin.TextCommand):
@@ -83,11 +87,11 @@ class SingleSelectionLastHelperCommand(sublime_plugin.TextCommand):
         view       = self.view
         selections = view.sel()
 
-        window = sublime.active_window()
-        window.focus_view( view )
-
+        force_focus( view, last_selection )
         selections.clear()
+
         selections.add( last_selection )
+        force_focus( view, last_selection )
 
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
