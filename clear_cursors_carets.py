@@ -58,7 +58,6 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             # Currently there is no Sublime Text support command to run and get the last selections
             last = selections[-1]
 
-        first = selections[0]
         selections.clear()
         selections.add( last )
 
@@ -68,6 +67,7 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             view.show_at_center( last )
             sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
 
+        first = last_expansions[0]
         view.show_at_center( first )
         sublime.set_timeout_async( delayed_run, 100 )
 
