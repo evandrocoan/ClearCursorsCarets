@@ -59,17 +59,35 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             last = selections[-1]
 
         selections.clear()
-        selections.add( last )
+        sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
 
-        def delayed_run():
-            # print( "SingleSelectionLast, Selecting last: " + str( last ) )
+        # selections.add( last )
+        # view.run_command( "move", {"by": "characters", "forward": False} )
 
-            view.show_at_center( last )
-            sublime_plugin.sublime.status_message( '`%s` selected!' % view.substr( last ) )
+        # print( "SingleSelectionLast, Selecting last: " + str( last ) )
+        window = sublime.active_window()
+        window.focus_view( view )
 
-        first = last_expansions[0]
-        view.show_at_center( first )
-        sublime.set_timeout_async( delayed_run, 100 )
+        def run_delayed():
+            global last_selection
+            last_selection = last
+            view.run_command( "single_selection_last_helper" )
+
+        sublime.set_timeout( run_delayed, 500 )
+
+
+class SingleSelectionLastHelperCommand(sublime_plugin.TextCommand):
+
+    def run(self, edit):
+        # print( 'Calling Selection Last Helper...' )
+        view       = self.view
+        selections = view.sel()
+
+        window = sublime.active_window()
+        window.focus_view( view )
+
+        selections.clear()
+        selections.add( last_selection )
 
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
