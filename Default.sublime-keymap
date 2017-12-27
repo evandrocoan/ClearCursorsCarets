@@ -21,18 +21,4 @@
             { "key": "num_selections", "operator": "not_equal", "operand": 1 },
         ]
     },
-
-    // Close/Open the command palette
-    { "keys": ["escape"], "command": "fixed_hide_overlay_which_is_correctly_logged", "context":
-        [
-            { "key": "auto_complete_visible", "operator": "equal", "operand": false },
-            { "key": "fixed_command_palette_last_input_history_context", "operator": "equal", "operand": "close" },
-        ]
-    },
-    { "keys": ["ctrl+shift+p"], "command": "fixed_command_palette_last_input_history", "context":
-        [
-            { "key": "auto_complete_visible", "operator": "equal", "operand": false },
-            { "key": "fixed_command_palette_last_input_history_context", "operator": "equal", "operand": "open" },
-        ]
-    },
 ]
