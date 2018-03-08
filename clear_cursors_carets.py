@@ -134,39 +134,3 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
                 if selection not in last_expansions:
                     last_expansions.append( selection )
 
-
-def run_tests():
-    """
-        How do I unload (reload) a Python module?
-        https://stackoverflow.com/questions/437589/how-do-i-unload-reload-a-python-module
-    """
-    PACKAGE_ROOT_DIRECTORY = os.path.dirname( os.path.realpath( __file__ ) )
-    CURRENT_PACKAGE_NAME = os.path.basename( PACKAGE_ROOT_DIRECTORY ).rsplit('.', 1)[0]
-
-    print( "\n\n" )
-    sublime_plugin.reload_plugin( CURRENT_PACKAGE_NAME + ".tests.unit_tests_runner" )
-    sublime_plugin.reload_plugin( CURRENT_PACKAGE_NAME + ".tests.utilities" )
-    sublime_plugin.reload_plugin( CURRENT_PACKAGE_NAME + ".tests.clear_cursors_carets_first_selection_unit_tests" )
-    sublime_plugin.reload_plugin( CURRENT_PACKAGE_NAME + ".tests.clear_cursors_carets_last_selection_unit_tests" )
-
-    from .tests import unit_tests_runner
-
-    # Comment all the tests names on this list, to run all Unit Tests
-    unit_tests_to_run = \
-    [
-        # "test_2_selections_at_last_word",
-        # "test_3_selections_with_initial_selection",
-    ]
-
-    unit_tests_runner.run_unit_tests( unit_tests_to_run )
-
-
-def plugin_loaded():
-    """
-        Running single test from unittest.TestCase via command line
-        https://stackoverflow.com/questions/15971735/running-single-test-from-unittest-testcase-via-command-line
-    """
-    pass
-    # run_tests()
-
-
