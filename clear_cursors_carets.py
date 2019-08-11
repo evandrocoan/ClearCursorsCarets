@@ -10,13 +10,15 @@ import sublime
 import sublime_plugin
 
 
+g_debug_index = 0
+last_expansions = []
+
+
 def force_focus(view, region):
     window = sublime.active_window()
     window.focus_view( view )
     view.show( region )
 
-
-last_expansions = []
 
 class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
 
@@ -93,11 +95,19 @@ class SingleSelectionLastHelperCommand(sublime_plugin.TextCommand):
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
 
+    # def on_text_command(self, view, command_name, args):
+    #     self.on_window_command( view.window(), command_name, args )
+
+    # def on_post_text_command(self, view, command_name, args):
+    #     self.on_post_window_command( view.window(), command_name, args )
+
     def on_window_command(self, window, command_name, args):
         """
             Here we clean the selections.
         """
-        if command_name == "find_under_expand":
+        if command_name == 'find_under_expand':
+            # global g_debug_index; g_debug_index += 1; print( g_debug_index, 'command_name', command_name)
+
             view       = window.active_view()
             selections = view.sel()
 
@@ -118,7 +128,8 @@ class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
         """
             Here add the recent created new selections by Sublime Text.
         """
-        if command_name == "find_under_expand":
+        if command_name == 'find_under_expand':
+            # global g_debug_index; g_debug_index += 1; print( g_debug_index, 'command_name', command_name)
             view       = window.active_view()
             selections = view.sel()
 
