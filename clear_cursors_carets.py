@@ -40,7 +40,7 @@ class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
             else:
                 global g_last_selection
                 g_last_selection = first
-                view.run_command( "clear_cursors_carets_single_selection_blinker" )
+                view.run_command( "clear_cursors_carets_single_selection_blinker", { "message": "FIRST" } )
 
         else:
             print('ClearCursorsCarets: Could not detect the find under expand selections.')
@@ -67,12 +67,12 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
 
         global g_last_selection
         g_last_selection = last
-        view.run_command( "clear_cursors_carets_single_selection_blinker" )
+        view.run_command( "clear_cursors_carets_single_selection_blinker", { "message": "LAST" } )
 
 
 class ClearCursorsCaretsSingleSelectionBlinkerCommand(sublime_plugin.TextCommand):
 
-    def run(self, edit):
+    def run(self, edit, message):
         view = self.view
         selections = view.sel()
 
@@ -82,11 +82,11 @@ class ClearCursorsCaretsSingleSelectionBlinkerCommand(sublime_plugin.TextCommand
 
         selections.clear()
         selections.add( g_last_selection.end() )
-        sublime_plugin.sublime.status_message( 'Selection set to %s' % view.substr( g_last_selection ) )
+        sublime_plugin.sublime.status_message( 'Selection set to %s %s' % ( message, view.substr( g_last_selection )[:100] ) )
 
         # view.run_command( "move", {"by": "characters", "forward": False} )
         # print( "SingleSelectionLast, Selecting last:", g_last_selection )
-        sublime.set_timeout( run_blinking_focus, 400 )
+        sublime.set_timeout( run_blinking_focus, 250 )
         force_focus( view, g_last_selection )
 
 
