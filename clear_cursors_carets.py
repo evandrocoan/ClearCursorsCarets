@@ -3,21 +3,21 @@
 See/read the README.MD file.
 """
 
-
 import os
 
 import sublime
 import sublime_plugin
 
-
 g_debug_index = 0
 last_expansions = []
-g_last_selection = None
 
-def force_focus(view, region_borders):
-    window = sublime.active_window()
-    window.focus_view( view )
-    view.show( region_borders )
+
+class Pref:
+    p = 'clear_cursors_carets.'
+
+    @classmethod
+    def blink_selection_on_single_selection(cls, settings):
+        return bool( settings.get( cls.p + 'blink_selection_on_single_selection', True ) )
 
 
 class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
@@ -38,9 +38,11 @@ class SingleSelectionFirstCommand(sublime_plugin.TextCommand):
                 view.run_command( "single_selection" )
 
             else:
-                global g_last_selection
-                g_last_selection = first
-                view.run_command( "clear_cursors_carets_single_selection_blinker", { "message": "FIRST" } )
+                view.run_command( "clear_cursors_carets_single_selection_blinker", {
+                        "message": "FIRST",
+                        "region_start": first.begin(),
+                        "region_end": first.end(),
+                    } )
 
         else:
             print('ClearCursorsCarets: Could not detect the find under expand selections.')
@@ -65,40 +67,81 @@ class SingleSelectionLastCommand(sublime_plugin.TextCommand):
             # Currently there is no Sublime Text support command to run and get the last selections
             last = selections[-1]
 
-        global g_last_selection
-        g_last_selection = last
-        view.run_command( "clear_cursors_carets_single_selection_blinker", { "message": "LAST" } )
+        view.run_command( "clear_cursors_carets_single_selection_blinker", {
+                "message": "LAST",
+                "region_start": last.begin(),
+                "region_end": last.end(),
+            } )
+
+
+def fix_selection_aligment(selections, region_borders):
+
+    if selections:
+        last_selection = None
+
+        for selection in sorted( selections, key=lambda item: item.begin() ):
+            # print('selection.begin', selection.begin())
+
+            if selection.begin() > region_borders.begin():
+
+                if last_selection is None:
+                    last_selection = selection
+                break
+
+            last_selection = selection
+
+        return last_selection
+
+
+def force_focus(view, region_borders):
+    window = sublime.active_window()
+    window.focus_view( view )
+    view.show( region_borders )
 
 
 class ClearCursorsCaretsSingleSelectionBlinkerCommand(sublime_plugin.TextCommand):
 
-    def run(self, edit, message):
+    def run(self, edit, message, region_start, region_end):
         view = self.view
         selections = view.sel()
+        settings = view.settings()
+        region_borders = sublime.Region( region_start, region_end )
+        region_borders = fix_selection_aligment( selections, region_borders )
 
         def run_blinking_focus():
-            force_focus( view, g_last_selection )
-            view.run_command( "clear_cursors_carets_single_selection_blinker_helper" )
+            if len( selections ) == 1 and selections[0].end() == region_borders.end():
+                force_focus( view, region_borders )
+
+                view.run_command( "clear_cursors_carets_single_selection_blinker_helper", {
+                        "region_start": region_start,
+                        "region_end": region_end,
+                    } )
 
         selections.clear()
-        selections.add( g_last_selection.end() )
-        sublime_plugin.sublime.status_message( 'Selection set to %s %s' % ( message, view.substr( g_last_selection )[:100] ) )
+        sublime.status_message( "Selection set to %s %s" % ( message, view.substr( region_borders )[:100] ) )
 
         # view.run_command( "move", {"by": "characters", "forward": False} )
-        # print( "SingleSelectionLast, Selecting last:", g_last_selection )
-        sublime.set_timeout( run_blinking_focus, 250 )
-        force_focus( view, g_last_selection )
+        # print( "SingleSelectionLast, Selecting last:", region_borders )
+        if Pref.blink_selection_on_single_selection( settings ):
+            selections.add( region_borders.end() )
+            sublime.set_timeout( run_blinking_focus, 250 )
+            force_focus( view, region_borders )
+
+        else:
+            selections.add( region_borders )
+            force_focus( view, region_borders )
 
 
 class ClearCursorsCaretsSingleSelectionBlinkerHelperCommand(sublime_plugin.TextCommand):
 
-    def run(self, edit):
-        # print( 'Calling Selection Last Helper... ', g_last_selection )
+    def run(self, edit, region_start, region_end):
+        # print( 'Calling Selection Last Helper... ', region_start, region_end )
         view = self.view
         selections = view.sel()
+        region_borders = sublime.Region( region_start, region_end )
 
         selections.clear()
-        selections.add( g_last_selection )
+        selections.add( region_borders )
 
 
 class FindUnderExpandFirstSelectionListener(sublime_plugin.EventListener):
